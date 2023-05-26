@@ -26,7 +26,6 @@ import java.util.Map;
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserService userService;
-    private final UserRepository userRepository;
 
     @Override
     public ItemDto createItem(Long userId, ItemDto itemDto) {
@@ -40,7 +39,7 @@ public class ItemServiceImpl implements ItemService {
         Item dataToUpdate = ItemMapper.dtoToItem(itemDto);
         Item item = ItemMapper.dtoToItem(getItemById(userId, itemId));
 
-        if ( !userId.equals(item.getOwner().getId())) {
+        if (!userId.equals(item.getOwner().getId())) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "У Вас нет прав на редактирование");
         }
         if (dataToUpdate.getName() != null) {

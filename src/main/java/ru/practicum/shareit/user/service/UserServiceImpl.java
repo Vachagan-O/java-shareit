@@ -17,7 +17,7 @@ import java.util.Map;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserDto searchUserById(Long userId) {
         List<UserDto> users = getAllUsers();
-        UserDto userDtoForReturn= null;
+        UserDto userDtoForReturn = null;
         for (UserDto userDto : users) {
             if (userDto.getId().equals(userId)) {
                 userDtoForReturn = userDto;
