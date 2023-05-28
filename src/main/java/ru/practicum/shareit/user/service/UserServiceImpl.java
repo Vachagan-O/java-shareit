@@ -2,9 +2,9 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import ru.practicum.shareit.exceptions.NotFoundException;
+import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
         User user = UserMapper.dtoToUser(userDto);
 
         if (!isUniqueEmail(userDto.getEmail())) {
-            throw new RuntimeException("Пользователь с такой почтой уже существует");
+            throw new ValidationException("Пользователь с такой почтой уже существует");
         }
         return UserMapper.userToDto(userRepository.createUser(user));
     }
@@ -44,12 +44,10 @@ public class UserServiceImpl implements UserService {
             }
             if (!user.getEmail().equals(userDto.getEmail())) {
                 if (!isUniqueEmail(userDto.getEmail())) {
-                    throw new RuntimeException("Пользователь с такой почтой уже существует");
+                    throw new ValidationException("Пользователь с такой почтой уже существует");
                 }
-                //Возможно нужно удалить
                 user.setEmail(userDto.getEmail());
             }
-            user.setEmail(userDto.getEmail());
         }
         log.info("Пользователь {} обновлен.", user.getName());
         return UserMapper.userToDto(userRepository.update(user));
@@ -65,7 +63,7 @@ public class UserServiceImpl implements UserService {
             }
         }
         if (userDtoForReturn == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь не найден");
+            throw new NotFoundException("Пользователь не найден");
         }
         return userDtoForReturn;
     }
