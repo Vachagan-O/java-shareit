@@ -2,10 +2,9 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
@@ -39,7 +38,7 @@ public class ItemServiceImpl implements ItemService {
         Item item = ItemMapper.dtoToItem(getItemById(userId, itemId));
 
         if (!userId.equals(item.getOwner().getId())) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "У Вас нет прав на редактирование");
+            throw new NotFoundException("У Вас нет прав на редактирование");
         }
         if (dataToUpdate.getName() != null) {
             item.setName(dataToUpdate.getName());

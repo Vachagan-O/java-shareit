@@ -15,6 +15,4 @@ public interface UserService {
     List<UserDto> getAllUsers();
 
     void deleteUser(Long id);
-
-    boolean isUniqueEmail(String email);
 }

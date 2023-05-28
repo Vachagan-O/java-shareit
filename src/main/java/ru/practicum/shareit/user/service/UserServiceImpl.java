@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import ru.practicum.shareit.exceptions.NotFoundException;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
@@ -25,7 +26,7 @@ public class UserServiceImpl implements UserService {
     public UserDto createUser(UserDto userDto) {
         User user = UserMapper.dtoToUser(userDto);
 
-        if (isUniqueEmail(userDto.getEmail())) {
+        if (!isUniqueEmail(userDto.getEmail())) {
             throw new RuntimeException("Пользователь с такой почтой уже существует");
         }
         return UserMapper.userToDto(userRepository.createUser(user));
@@ -43,7 +44,7 @@ public class UserServiceImpl implements UserService {
                 user.setEmail(userDto.getEmail());
             }
             if (!user.getEmail().equals(userDto.getEmail())) {
-                if (isUniqueEmail(userDto.getEmail())) {
+                if (!isUniqueEmail(userDto.getEmail())) {
                     throw new RuntimeException("Пользователь с такой почтой уже существует");
                 }
                 //Возможно нужно удалить
@@ -87,18 +88,13 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteUser(id);
     }
 
-    @Override
-    public boolean isUniqueEmail(String email) {
-        List<UserDto> users = new ArrayList<>(getAllUsers());
 
-        for (UserDto user : users) {
-            if (user.getEmail().equals(email)) {
-                log.info("Этот Email не уникален! '{}'", email);
-                return true;
-            }
-        }
+    private boolean isUniqueEmail(String email) {
         log.info("Email уникален! '{}'", email);
-
-        return false;
+        return getAllUsers()
+                .stream()
+                .filter(x -> x.getEmail().equals(email))
+                .findFirst()
+                .isEmpty();
     }
 }

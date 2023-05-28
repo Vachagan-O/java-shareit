@@ -7,10 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-
-/**
- * TODO Sprint add-controllers.
- */
+import javax.validation.constraints.Size;
 
 @Data
 @Builder(toBuilder = true)
@@ -21,6 +18,7 @@ public class User {
     private String name;
     @Email(message = "Некорректный адрес электронной почты")
     @NotBlank(message = "Поле не может быть пустым")
+    @Size(max = 30, message = "Вы превысили максимальное количество символов")
     private String email;
 }
 
