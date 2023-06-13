@@ -9,12 +9,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
-//    @ExceptionHandler()
-//    @ResponseStatus(HttpStatus.CONFLICT)
-//    public ErrorResponse alreadyExistHandle(final AlreadyExistException e) {
-//        log.error(e.getMessage());
-//        return new ErrorResponse(e.getMessage());
-//    }
 
     @ExceptionHandler()
     @ResponseStatus(HttpStatus.NOT_FOUND)

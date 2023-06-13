@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item.controller;
 
 import lombok.AllArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -12,7 +11,6 @@ import ru.practicum.shareit.item.service.ItemService;
 import javax.validation.Valid;
 import java.util.List;
 
-//@Validated
 @RestController
 @RequestMapping("/items")
 @AllArgsConstructor

@@ -2,7 +2,6 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingStatus;
@@ -28,7 +27,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -98,11 +96,6 @@ public class ItemServiceImpl implements ItemService {
         return itemWithDateAndCommentsDtos;
     }
 
-//    @Override
-//    public Map<Long, Item> getAllItems() {
-//        return itemRepository.getAllItems();
-//    }
-
     @Override
     public ItemWithDateAndCommentsDto getItemById(Long userId, Long id) {
         userService.searchUserById(userId);
@@ -169,11 +162,6 @@ public class ItemServiceImpl implements ItemService {
         log.info("Комментарий добавлен: {}", comment);
         return commentMapper.toCommentDto(comment);
     }
-
-//    private Boolean isFounded(String text, Item item) {
-//        return (item.getName().toLowerCase().contains(text.toLowerCase()) ||
-//                item.getDescription().toLowerCase().contains(text.toLowerCase())) && item.getAvailable();
-//    }
 
     private BookingDto getLastBooking(Long itemId) {
         Booking booking = bookingRepository

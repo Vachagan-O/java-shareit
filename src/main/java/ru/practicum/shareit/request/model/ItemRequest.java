@@ -1,10 +1,5 @@
 package ru.practicum.shareit.request.model;
 
-
-
-
-// класс, отвечающий за запрос вещи
-
 import lombok.*;
 import ru.practicum.shareit.user.model.User;
 
