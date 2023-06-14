@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
         if (userDto.getName() != null) {
             user.setName(userDto.getName());
         }
-        if(userDto.getEmail() != null) {
+        if (userDto.getEmail() != null) {
             user.setEmail(userDto.getEmail());
         }
         userRepository.save(user);
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getAllUsers() {
         List<UserDto> users = userMapper.userToDtoList(userRepository.findAll());
-        log.info("Всего пользователей {}", users.size() );
+        log.info("Всего пользователей {}", users.size());
         return users;
     }
 
