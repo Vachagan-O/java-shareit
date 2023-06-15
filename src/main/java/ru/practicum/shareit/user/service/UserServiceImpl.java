@@ -20,8 +20,9 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserDto createUser(User user) {
-        user = userRepository.save(user);
+    public UserDto createUser(UserDto userDto) {
+        User user = userMapper.dtoToUser(userDto);
+        userRepository.save(user);
         return userMapper.userToDto(user);
     }
 
@@ -43,7 +44,7 @@ public class UserServiceImpl implements UserService {
     public UserDto searchUserById(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
-        log.info("Gjkmpjdfntkm {} yfqlty: {}", user.getName(), user);
+        log.info("Предмет {} найден: {}", user.getName(), user);
         return userMapper.userToDto(user);
     }
 

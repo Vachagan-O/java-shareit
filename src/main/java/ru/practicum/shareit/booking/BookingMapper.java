@@ -8,8 +8,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class BookingMapper {
-    public BookingDto toBookingDto(Booking booking) {
+public final class BookingMapper {
+    private BookingMapper() {
+    }
+
+    public static BookingDto toBookingDto(Booking booking) {
         return BookingDto.builder()
                 .id(booking.getId())
                 .start(booking.getStart())
@@ -19,9 +22,9 @@ public class BookingMapper {
                 .build();
     }
 
-    public List<BookingDto> toBookingDto(List<Booking> bookings) {
+    public static List<BookingDto> toBookingDto(List<Booking> bookings) {
         return bookings.stream()
-                .map(this::toBookingDto)
+                .map(BookingMapper::toBookingDto)
                 .collect(Collectors.toList());
     }
 }

@@ -31,8 +31,6 @@ public class User {
 
     @NotBlank(message = "Поле не может быть пустым")
     @Email(message = "Некорректный адрес электронной почты")
-    @Size(max = 255, message = "Вы превысили максимальное количество символов")
+    @Size(max = 100, message = "Вы превысили максимальное количество символов")
     private String email;
 }
-
-
