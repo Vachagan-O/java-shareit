@@ -39,7 +39,6 @@ public class ItemServiceImpl implements ItemService {
     private final ItemMapper itemMapper;
     private final UserMapper userMapper;
     private final CommentMapper commentMapper;
-    private final BookingMapper bookingMapper;
 
     @Override
     public Item createItem(Long userId, ItemDto itemDto) {
@@ -171,7 +170,7 @@ public class ItemServiceImpl implements ItemService {
                 .filter(x -> x.getStart().isBefore(LocalDateTime.now()))
                 .max(Comparator.comparing(Booking::getStart))
                 .orElse(null);
-        return booking != null ? bookingMapper.toBookingDto(booking) : null;
+        return booking != null ? BookingMapper.toBookingDto(booking) : null;
     }
 
     private BookingDto getNextBooking(Long itemId) {
@@ -182,6 +181,6 @@ public class ItemServiceImpl implements ItemService {
                 .filter(x -> x.getStart().isAfter(LocalDateTime.now()))
                 .min(Comparator.comparing(Booking::getStart))
                 .orElse(null);
-        return booking != null ? bookingMapper.toBookingDto(booking) : null;
+        return booking != null ? BookingMapper.toBookingDto(booking) : null;
     }
 }
