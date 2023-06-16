@@ -4,94 +4,59 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.NotFoundException;
-import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
+
 
     @Override
     public UserDto createUser(UserDto userDto) {
-        User user = UserMapper.dtoToUser(userDto);
-
-        if (!isUniqueEmail(userDto.getEmail())) {
-            throw new ValidationException("Пользователь с такой почтой уже существует");
-        }
-        return UserMapper.userToDto(userRepository.createUser(user));
+        User user = userMapper.dtoToUser(userDto);
+        userRepository.save(user);
+        return userMapper.userToDto(user);
     }
 
     @Override
     public UserDto update(UserDto userDto, Long userId) {
-        User user = UserMapper.dtoToUser(searchUserById(userId));
-
+        User user = userMapper.dtoToUser(searchUserById(userId));
         if (userDto.getName() != null) {
             user.setName(userDto.getName());
         }
         if (userDto.getEmail() != null) {
-            if (user.getEmail().equals(userDto.getEmail())) {
-                user.setEmail(userDto.getEmail());
-            }
-            if (!user.getEmail().equals(userDto.getEmail())) {
-                if (!isUniqueEmail(userDto.getEmail())) {
-                    throw new ValidationException("Пользователь с такой почтой уже существует");
-                }
-                user.setEmail(userDto.getEmail());
-            }
+            user.setEmail(userDto.getEmail());
         }
+        userRepository.save(user);
         log.info("Пользователь {} обновлен.", user.getName());
-        return UserMapper.userToDto(userRepository.update(user));
+        return userMapper.userToDto(user);
     }
 
     @Override
     public UserDto searchUserById(Long userId) {
-        List<UserDto> users = getAllUsers();
-        UserDto userDtoForReturn = null;
-        for (UserDto userDto : users) {
-            if (userDto.getId().equals(userId)) {
-                userDtoForReturn = userDto;
-            }
-        }
-        if (userDtoForReturn == null) {
-            throw new NotFoundException("Пользователь не найден");
-        }
-        return userDtoForReturn;
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+        log.info("Предмет {} найден: {}", user.getName(), user);
+        return userMapper.userToDto(user);
     }
 
     @Override
     public List<UserDto> getAllUsers() {
-        Map<Long, User> userMap = userRepository.getAllUsers();
-
-        List<UserDto> usersDto = new ArrayList<>();
-
-        for (User user : userMap.values()) {
-            usersDto.add(UserMapper.userToDto(user));
-        }
-        return usersDto;
+        List<UserDto> users = userMapper.userToDtoList(userRepository.findAll());
+        log.info("Всего пользователей {}", users.size());
+        return users;
     }
 
     @Override
     public void deleteUser(Long id) {
-        userRepository.deleteUser(id);
-    }
-
-
-    private boolean isUniqueEmail(String email) {
-        log.info("Email уникален! '{}'", email);
-        return getAllUsers()
-                .stream()
-                .filter(x -> x.getEmail().equals(email))
-                .findFirst()
-                .isEmpty();
+        userRepository.deleteById(id);
     }
 }

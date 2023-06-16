@@ -1,10 +1,12 @@
 package ru.practicum.shareit.item.dto;
 
 import lombok.*;
+import ru.practicum.shareit.booking.dto.BookingDto;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,15 +15,22 @@ import javax.validation.constraints.NotNull;
 @ToString
 @EqualsAndHashCode
 @Builder
-public class ItemDto {
+public class ItemWithDateAndCommentsDto {
     private Long id;
 
-    @NotBlank(message = "Название не может состоять только из пробелов")
+    @NotBlank
     private String name;
 
-    @NotEmpty(message = "Описание не может быть пустым")
+    @NotBlank
+    @Size(max = 200)
     private String description;
 
-    @NotNull(message = "Статус не может быть без значения")
+    @NotNull
     private Boolean available;
+
+    private BookingDto lastBooking;
+
+    private BookingDto nextBooking;
+
+    private List<CommentDto> comments;
 }

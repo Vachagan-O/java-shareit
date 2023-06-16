@@ -1,29 +1,34 @@
 package ru.practicum.shareit.user;
 
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
-@AllArgsConstructor
-@Repository
 public class UserMapper {
 
-    public static UserDto userToDto(User user) {
-        return new UserDto(
-                user.getId(),
-                user.getName(),
-                user.getEmail()
-        );
+    public UserDto userToDto(User user) {
+        return UserDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .build();
     }
 
-    public static User dtoToUser(UserDto userDto) {
-        return new User(
-                userDto.getId(),
-                userDto.getName(),
-                userDto.getEmail()
-        );
+    public User dtoToUser(UserDto userDto) {
+        return User.builder()
+                .id(userDto.getId())
+                .name(userDto.getName())
+                .email(userDto.getEmail())
+                .build();
+    }
+
+    public List<UserDto> userToDtoList(List<User> users) {
+        return users.stream()
+                .map(this::userToDto)
+                .collect(Collectors.toList());
     }
 }
