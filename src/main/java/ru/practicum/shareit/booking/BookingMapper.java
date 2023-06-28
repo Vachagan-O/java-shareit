@@ -7,7 +7,7 @@ public class BookingMapper {
     private BookingMapper() {
     }
 
-    public static BookingDto toBookingDto(Booking booking) {
+    public static BookingDto bookingToDto(Booking booking) {
         return BookingDto.builder()
                 .id(booking.getId())
                 .start(booking.getStart())

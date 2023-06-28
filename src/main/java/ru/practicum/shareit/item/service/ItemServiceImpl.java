@@ -171,7 +171,7 @@ public class ItemServiceImpl implements ItemService {
                 .filter(x -> x.getStart().isBefore(LocalDateTime.now()))
                 .max(Comparator.comparing(Booking::getStart))
                 .orElse(null);
-        return booking != null ? BookingMapper.toBookingDto(booking) : null;
+        return booking != null ? BookingMapper.bookingToDto(booking) : null;
     }
 
     private BookingDto getNextBooking(Long itemId) {
@@ -182,6 +182,6 @@ public class ItemServiceImpl implements ItemService {
                 .filter(x -> x.getStart().isAfter(LocalDateTime.now()))
                 .min(Comparator.comparing(Booking::getStart))
                 .orElse(null);
-        return booking != null ? BookingMapper.toBookingDto(booking) : null;
+        return booking != null ? BookingMapper.bookingToDto(booking) : null;
     }
 }
