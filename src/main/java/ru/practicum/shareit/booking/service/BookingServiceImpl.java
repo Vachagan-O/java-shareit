@@ -2,7 +2,7 @@ package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.BookingState;
@@ -96,69 +96,74 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Booking> findBookingsByState(Long userId, String state) {
+    public List<Booking> findBookingsByState(Long userId, String state, Pageable pageRequest) {
         BookingState bookingState;
         userService.searchUserById(userId);
         try {
-            bookingState = BookingState.valueOf(state);
+            bookingState = BookingState.valueOf(state.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new BadRequestException("Unknown state: " + state);
         }
-        Sort sort = Sort.by("start").descending();
-        List<Booking> bookings = new ArrayList<>();
+
+        Iterable<Booking> bookings = new ArrayList<>();
         switch (bookingState) {
             case ALL:
-                bookings = bookingRepository.findByBookerId(userId, sort);
+                bookings = bookingRepository.findByBookerId(userId, pageRequest);
                 break;
             case CURRENT:
-                bookings = bookingRepository.findByBookerIdAndCurrentState(userId, LocalDateTime.now(), sort);
+                bookings = bookingRepository.findByBookerIdAndCurrentState(userId, LocalDateTime.now(), pageRequest);
                 break;
             case PAST:
-                bookings = bookingRepository.findByBookerIdAndEndBefore(userId, LocalDateTime.now(), sort);
+                bookings = bookingRepository.findByBookerIdAndEndBefore(userId, LocalDateTime.now(), pageRequest);
                 break;
             case FUTURE:
-                bookings = bookingRepository.findByBookerIdAndStartAfter(userId, LocalDateTime.now(), sort);
+                bookings = bookingRepository.findByBookerIdAndStartAfter(userId, LocalDateTime.now(), pageRequest);
                 break;
             case WAITING:
-                bookings = bookingRepository.findByBookerIdAndStatusIs(userId, BookingStatus.WAITING, sort);
+                bookings = bookingRepository.findByBookerIdAndStatusIs(userId, BookingStatus.WAITING, pageRequest);
                 break;
             case REJECTED:
-                bookings = bookingRepository.findByBookerIdAndStatusIs(userId, BookingStatus.REJECTED, sort);
+                bookings = bookingRepository.findByBookerIdAndStatusIs(userId, BookingStatus.REJECTED, pageRequest);
         }
-        log.info("Найдено {} бронирований для состояния \"{}\" ", bookings.size(), bookingState);
-        return bookings;
+        List<Booking> bookingList = new ArrayList<>();
+        bookings.forEach(bookingList::add);
+        log.info(" Найдено {} бронирований", bookingList.size());
+        return bookingList;
     }
 
     @Override
-    public List<Booking> findBookingByStateForOwner(Long userId, String state) {
+    public List<Booking> findBookingByStateForOwner(Long userId, String state, Pageable pageRequest) {
         BookingState bookingState;
         userService.searchUserById(userId);
         try {
-            bookingState = BookingState.valueOf(state);
+            bookingState = BookingState.valueOf(state.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new BadRequestException("Unknown state: " + state);
         }
-        List<Booking> bookings = new ArrayList<>();
+
+        Iterable<Booking> bookings = new ArrayList<>();
         switch (bookingState) {
             case ALL:
-                bookings = bookingRepository.findByOwnerId(userId);
+                bookings = bookingRepository.findByOwnerId(userId, pageRequest);
                 break;
             case CURRENT:
-                bookings = bookingRepository.findByOwnerIdCurrentState(userId, LocalDateTime.now());
+                bookings = bookingRepository.findByOwnerIdCurrentState(userId, LocalDateTime.now(), pageRequest);
                 break;
             case PAST:
-                bookings = bookingRepository.findByOwnerIdPastState(userId, LocalDateTime.now());
+                bookings = bookingRepository.findByOwnerIdPastState(userId, LocalDateTime.now(), pageRequest);
                 break;
             case FUTURE:
-                bookings = bookingRepository.findByOwnerIdFutureState(userId, LocalDateTime.now());
+                bookings = bookingRepository.findByOwnerIdFutureState(userId, LocalDateTime.now(), pageRequest);
                 break;
             case WAITING:
-                bookings = bookingRepository.findByOwnerIdAndStatus(userId, BookingStatus.WAITING);
+                bookings = bookingRepository.findByOwnerIdAndStatus(userId, BookingStatus.WAITING, pageRequest);
                 break;
             case REJECTED:
-                bookings = bookingRepository.findByOwnerIdAndStatus(userId, BookingStatus.REJECTED);
+                bookings = bookingRepository.findByOwnerIdAndStatus(userId, BookingStatus.REJECTED, pageRequest);
         }
-        log.info("Найдено {} бронирований для состояния \"{}\" ", bookings.size(), bookingState);
-        return bookings;
+        List<Booking> bookingList = new ArrayList<>();
+        bookings.forEach(bookingList::add);
+        log.info(" Найдено {} бронирований", bookingList.size());
+        return bookingList;
     }
 }

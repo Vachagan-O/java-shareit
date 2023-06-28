@@ -24,4 +24,6 @@ public class ItemDto {
 
     @NotNull(message = "Статус не может быть без значения")
     private Boolean available;
+
+    private Long requestId;
 }

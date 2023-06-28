@@ -31,6 +31,7 @@ public class ItemRequestServiceImpl implements ItemRequestService{
     private final UserMapper userMapper;
     private final ItemMapper itemMapper;
     private final ItemRequestMapper itemRequestMapper;
+
     @Override
     public ItemRequest createItemRequest(Long userId, ItemRequestDto itemRequestDto) {
         User user = userMapper.dtoToUser(userService.searchUserById(userId));
@@ -47,14 +48,15 @@ public class ItemRequestServiceImpl implements ItemRequestService{
     @Override
     public List<ItemRequestDto> getItemRequests(Long userId) {
         userService.searchUserById(userId);
-        List<ItemRequestDto> itemRequestDtos = requestRepository
+        List<ItemRequestDto> itemRequests = requestRepository
                 .findByRequestorIdOrderByCreated(userId)
                 .stream()
                 .map(itemRequestMapper::toItemRequestDto)
                 .collect(Collectors.toList());
-        itemRequestDtos.forEach(i -> i.setItems(itemMapper.itemToDtoList(itemRepository.findByRequestId(i.getId()))));
-        log.info("У пользователя {} запросов", itemRequestDtos.size());
-        return itemRequestDtos;
+
+        itemRequests.forEach(ir -> ir.setItems(itemMapper.itemToDtoList(itemRepository.findByRequestId(ir.getId()))));
+        log.info("У пользователя {} запросов", itemRequests.size());
+        return itemRequests;
     }
 
     @Override
@@ -67,7 +69,7 @@ public class ItemRequestServiceImpl implements ItemRequestService{
                 .collect(Collectors.toList());
 
         requests.forEach(ir -> ir.setItems(itemMapper.itemToDtoList(itemRepository.findByRequestId(ir.getId()))));
-        log.info("Requests quantity is: {}", requests.size());
+        log.info("Количество запросов: {}", requests.size());
         return requests;
     }
 
