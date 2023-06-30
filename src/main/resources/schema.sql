@@ -4,6 +4,14 @@ create TABLE IF NOT EXISTS users (
     email VARCHAR(100) NOT NULL UNIQUE
 );
 
+create TABLE IF NOT EXISTS requests (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    description VARCHAR(100) NOT NULL,
+    requestor_id BIGINT NOT NULL,
+    created_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    CONSTRAINT fk_requests_to_users FOREIGN KEY(requestor_id) REFERENCES users(id)
+);
+
 create TABLE IF NOT EXISTS items (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -11,7 +19,8 @@ create TABLE IF NOT EXISTS items (
     is_available BOOLEAN NOT NULL,
     owner_id BIGINT,
     request_id BIGINT,
-    CONSTRAINT fk_items_to_users FOREIGN KEY(owner_id) REFERENCES users(id)
+    CONSTRAINT fk_items_to_users FOREIGN KEY(owner_id) REFERENCES users(id),
+    CONSTRAINT fk_items_to_requests FOREIGN KEY(request_id) REFERENCES requests(id)
 );
 
 create TABLE IF NOT EXISTS bookings (

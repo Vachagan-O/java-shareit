@@ -16,17 +16,18 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
+                .requestId(item.getRequestId())
                 .build();
     }
 
-    public Item dtoToItem(ItemDto itemDto, Long owner, Long request) {
+    public Item dtoToItem(ItemDto itemDto, Long owner) {
         return Item.builder()
                 .id(itemDto.getId())
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
                 .available(itemDto.getAvailable())
                 .ownerId(owner)
-                .requestId(request)
+                .requestId(itemDto.getRequestId())
                 .build();
     }
 
