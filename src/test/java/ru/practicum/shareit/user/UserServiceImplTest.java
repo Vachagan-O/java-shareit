@@ -39,7 +39,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void findAll_whenUsersFound_thenReturnedUsers() {
+    void findAllWhenUsersFoundThenReturnedUsers() {
         when(userMapper.userToDtoList(anyList())).thenReturn(List.of(dto));
 
         List<UserDto> actualUsers = userService.getAllUsers();
@@ -51,7 +51,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void create_whenUserSaved_thenReturnedUserDto() {
+    void createWhenUserSavedThenReturnedUserDto() {
         when(userRepository.save(user)).thenReturn(user);
         when(userMapper.dtoToUser(any(UserDto.class))).thenReturn(user);
         when(userMapper.userToDto(any(User.class))).thenReturn(dto);
@@ -63,7 +63,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void update_whenUserUpdated_thenReturnedUserDto() {
+    void updateWhenUserUpdatedThenReturnedUserDto() {
         dto = new UserDto(0L, "NewName", "NewEmail");
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(userMapper.dtoToUser(any(UserDto.class))).thenReturn(user);
@@ -76,7 +76,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void findUserById_whenUserFound_thenReturnedUser() {
+    void findUserByIdWhenUserFoundThenReturnedUser() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(userMapper.userToDto(any(User.class))).thenReturn(dto);
 

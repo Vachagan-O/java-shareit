@@ -72,7 +72,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void createBooking_whenValidData_thenSavedBooking() {
+    void createBookingWhenValidDataThenSavedBooking() {
         Booking bookingToSave = makeBooking(null, dto.getStart(), dto.getEnd(),
                 item, user, BookingStatus.WAITING);
 
@@ -88,7 +88,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void createBooking_whenUserDoesNotExist_thenNotFoundExceptionThrown() {
+    void createBookingWhenUserDoesNotExistThenNotFoundExceptionThrown() {
         doThrow(NotFoundException.class).when(userService).searchUserById(user.getId());
 
         assertThrows(NotFoundException.class, () -> bookingService.createBooking(user.getId(), dto));
@@ -96,7 +96,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void createBooking_whenItemDoesNotExist_thenNotFoundExceptionThrown() {
+    void createBookingWhenItemDoesNotExistThenNotFoundExceptionThrown() {
         doThrow(NotFoundException.class).when(itemRepository).findById(dto.getItemId());
 
         assertThrows(NotFoundException.class, () -> bookingService.createBooking(user.getId(), dto));
@@ -104,7 +104,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void createBooking_whenEndLessThanStart_thenBadRequestExceptionThrown() {
+    void createBookingWhenEndLessThanStartThenBadRequestExceptionThrown() {
         dto.setEnd(dto.getEnd().minusMinutes(20L));
 
         assertThrows(BadRequestException.class, () -> bookingService.createBooking(user.getId(), dto));
@@ -112,7 +112,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void createBooking_whenItemIsNotAvailable_thenBadRequestExceptionThrown() {
+    void createBookingWhenItemIsNotAvailable_ThenBadRequestExceptionThrown() {
         item.setAvailable(false);
         when(itemRepository.findById(dto.getItemId())).thenReturn(Optional.of(item));
 
@@ -121,7 +121,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void createBooking_whenUserIsOwner_thenNotFoundExceptionThrown() {
+    void createBookingWhenUserIsOwnerThenNotFoundExceptionThrown() {
         item.setOwnerId(user.getId());
         when(itemRepository.findById(dto.getItemId())).thenReturn(Optional.of(item));
 
@@ -130,7 +130,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void approveBooking_whenUserApproved_thenSavedBookingWithApprovedStatus() {
+    void approveBookingWhenUserApprovedThenSavedBookingWithApprovedStatus() {
         item.setOwnerId(user.getId());
         when(bookingRepository.findById(booking.getId()))
                 .thenReturn(Optional.of(booking));
@@ -150,7 +150,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void approveBooking_whenUserNotApproved_thenSavedBookingWithRejectedStatus() {
+    void approveBookingWhenUserNotApprovedThenSavedBookingWithRejectedStatus() {
         item.setOwnerId(user.getId());
         when(bookingRepository.findById(booking.getId()))
                 .thenReturn(Optional.of(booking));
@@ -170,7 +170,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void approveBooking_whenUserIsNotOwner_thenNotFoundExceptionThrown() {
+    void approveBookingWhenUserIsNotOwnerThenNotFoundExceptionThrown() {
         when(bookingRepository.findById(booking.getId()))
                 .thenReturn(Optional.of(booking));
 
@@ -180,7 +180,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void approveBooking_whenBookingStatusIsApproved_thenBadRequestExceptionThrown() {
+    void approveBookingWhenBookingStatusIsApprovedThenBadRequestExceptionThrown() {
         item.setOwnerId(user.getId());
         booking.setStatus(BookingStatus.APPROVED);
         when(bookingRepository.findById(booking.getId()))
@@ -192,7 +192,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findBookingById_whenBookingFound_thenReturnedBooking() {
+    void findBookingByIdWhenBookingFoundThenReturnedBooking() {
         when(bookingRepository.findById(booking.getId()))
                 .thenReturn(Optional.of(booking));
 
@@ -202,7 +202,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findBookingById_whenBookingNotFound_thenNotFoundExceptionThrown() {
+    void findBookingByIdWhenBookingNotFoundThenNotFoundExceptionThrown() {
         when(bookingRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         NotFoundException notFoundException = assertThrows(NotFoundException.class, () -> bookingService
@@ -211,7 +211,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findBookingById_whenUserIsNeitherOwnerNorBooker_thenNotFoundExceptionThrown() {
+    void findBookingByIdWhenUserIsNeitherOwnerNorBookerThenNotFoundExceptionThrown() {
         when(bookingRepository.findById(booking.getId()))
                 .thenReturn(Optional.of(booking));
 
@@ -222,7 +222,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findBookingsByState_whenStateIsAll_thenAllBranchIsSelected() {
+    void findBookingsByStateWhenStateIsAllThenAllBranchIsSelected() {
         when(bookingRepository.findByBookerId(anyLong(), any())).thenReturn(Collections.emptyList());
 
         List<Booking> actualBookings = bookingService.findBookingsByState(0L, "all", Pageable.unpaged());
@@ -233,7 +233,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findBookingsByState_whenStateIsCurrent_thenCurrentBranchIsSelected() {
+    void findBookingsByStateWhenStateIsCurrentThenCurrentBranchIsSelected() {
         when(bookingRepository.findByBookerIdAndCurrentState(anyLong(), any(), any()))
                 .thenReturn(Collections.emptyList());
 
@@ -245,7 +245,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findBookingsByState_whenStateIsPast_thenPastBranchIsSelected() {
+    void findBookingsByStateWhenStateIsPastThenPastBranchIsSelected() {
         when(bookingRepository.findByBookerIdAndEndBefore(anyLong(), any(), any()))
                 .thenReturn(Collections.emptyList());
 
@@ -257,7 +257,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findBookingsByState_whenStateIsFuture_thenFutureBranchIsSelected() {
+    void findBookingsByStateWhenStateIsFutureThenFutureBranchIsSelected() {
         when(bookingRepository.findByBookerIdAndStartAfter(anyLong(), any(), any()))
                 .thenReturn(Collections.emptyList());
 
@@ -269,7 +269,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findBookingsByState_whenStateIsWaiting_thenWaitingBranchIsSelected() {
+    void findBookingsByStateWhenStateIsWaitingThenWaitingBranchIsSelected() {
         when(bookingRepository.findByBookerIdAndStatusIs(anyLong(), any(), any()))
                 .thenReturn(Collections.emptyList());
 
@@ -281,7 +281,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findBookingsByState_whenStateIsRejected_thenRejectedBranchIsSelected() {
+    void findBookingsByStateWhenStateIsRejectedThenRejectedBranchIsSelected() {
         when(bookingRepository.findByBookerIdAndStatusIs(anyLong(), any(), any()))
                 .thenReturn(Collections.emptyList());
 
@@ -293,14 +293,14 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findBookingsByState_whenStateIsUnknown_thenBadRequestExceptionThrown() {
+    void findBookingsByStateWhenStateIsUnknownThenBadRequestExceptionThrown() {
         BadRequestException badRequest = assertThrows(BadRequestException.class, () -> bookingService
                 .findBookingsByState(0L, "unknown", Pageable.unpaged()));
         assertEquals("Unknown state: unknown", badRequest.getMessage());
     }
 
     @Test
-    void findBookingByStateForOwner_whenStateIsAll_thenAllBranchIsSelected() {
+    void findBookingByStateForOwnerWhenStateIsAllThenAllBranchIsSelected() {
         when(bookingRepository.findByOwnerId(anyLong(), any()))
                 .thenReturn(Collections.emptyList());
 
@@ -313,7 +313,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findBookingByStateForOwner_whenStateIsCurrent_thenCurrentBranchIsSelected() {
+    void findBookingByStateForOwnerWhenStateIsCurrentThenCurrentBranchIsSelected() {
         when(bookingRepository.findByOwnerIdCurrentState(anyLong(), any(), any()))
                 .thenReturn(Collections.emptyList());
 
@@ -326,7 +326,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findBookingByStateForOwner_whenStateIsPast_thenPastBranchIsSelected() {
+    void findBookingByStateForOwnerWhenStateIsPastThenPastBranchIsSelected() {
         when(bookingRepository.findByOwnerIdPastState(anyLong(), any(), any()))
                 .thenReturn(Collections.emptyList());
 
@@ -339,7 +339,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findBookingByStateForOwner_whenStateIsFuture_thenFutureBranchIsSelected() {
+    void findBookingByStateForOwnerWhenStateIsFutureThenFutureBranchIsSelected() {
         when(bookingRepository.findByOwnerIdFutureState(anyLong(), any(), any()))
                 .thenReturn(Collections.emptyList());
 
@@ -352,7 +352,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findBookingByStateForOwner_whenStateIsWaiting_thenWaitingBranchIsSelected() {
+    void findBookingByStateForOwnerWhenStateIsWaitingThenWaitingBranchIsSelected() {
         when(bookingRepository.findByOwnerIdAndStatus(anyLong(), any(), any()))
                 .thenReturn(Collections.emptyList());
 
@@ -365,7 +365,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findBookingByStateForOwner_whenStateIsRejected_thenRejectedBranchIsSelected() {
+    void findBookingByStateForOwnerWhenStateIsRejectedThenRejectedBranchIsSelected() {
         when(bookingRepository.findByOwnerIdAndStatus(anyLong(), any(), any()))
                 .thenReturn(Collections.emptyList());
 
@@ -378,7 +378,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void findBookingByStateForOwner_whenStateIsUnknown_thenBadRequestExceptionThrown() {
+    void findBookingByStateForOwnerWhenStateIsUnknownThenBadRequestExceptionThrown() {
         BadRequestException badRequest = assertThrows(BadRequestException.class, () -> bookingService
                 .findBookingByStateForOwner(0L, "unknown", Pageable.unpaged()));
         assertEquals("Unknown state: unknown", badRequest.getMessage());

@@ -77,7 +77,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void createItem_whenValidData_thenSavedItem() {
+    void createItemWhenValidDataThenSavedItem() {
         when(itemRepository.save(any())).thenReturn(item);
 
         Item actualItem = itemService.createItem(anyLong(), itemDto);
@@ -87,7 +87,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void updateItem_whenValidData_thenSavedItem() {
+    void updateItemWhenValidDataThenSavedItem() {
         Long userId = 0L;
         when(itemRepository.findById(any())).thenReturn(Optional.of(item));
         when(itemMapper.itemToDto(any(Item.class))).thenReturn(itemDto);
@@ -99,7 +99,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void updateItem_whenItemNotFound_thenNotFoundExceptionThrown() {
+    void updateItemWhenItemNotFoundThenNotFoundExceptionThrown() {
         Long userId = 0L;
 
         NotFoundException notFoundException = assertThrows(NotFoundException.class, () -> itemService
@@ -110,7 +110,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void updateItem_whenUserIsNotOwner_thenNotFoundExceptionThrown() {
+    void updateItemWhenUserIsNotOwnerThenNotFoundExceptionThrown() {
         Long userId = 1L;
         when(itemRepository.findById(any())).thenReturn(Optional.of(item));
 
@@ -122,7 +122,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void findItemById_whenUserIsNotOwner_thenReturnedItem() {
+    void findItemByIdWhenUserIsNotOwnerThenReturnedItem() {
         Long userId = 0L;
         when(itemRepository.findById(any())).thenReturn(Optional.of(item));
         when(commentRepository.findByItemId(anyLong())).thenReturn(Collections.emptyList());
@@ -142,7 +142,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void findItemsByUserId_whenUserExists_thenReturnedItems() {
+    void findItemsByUserIdWhenUserExistsThenReturnedItems() {
         Long userId = 0L;
         List<Item> expectedItems = List.of(
                 new Item(0L, "name", "description", true, 0L, 0L),
@@ -163,7 +163,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void getItemsByQuery_whenQueryIsNotEmpty_thenReturnedItemDtos() {
+    void getItemsByQueryWhenQueryIsNotEmptyThenReturnedItemDtos() {
         Long userId = 0L;
         when(itemRepository.search(any(), any(PageRequest.class))).thenReturn(Collections.emptyList());
         when(itemMapper.itemToDtoList(anyList())).thenReturn(List.of(itemDto));
@@ -176,7 +176,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void createComment_whenValidData_thenSavedComment() {
+    void createCommentWhenValidDataThenSavedComment() {
         Long userId = 0L;
         CommentDto dto = new CommentDto(0L, "text", null, null);
         when(itemRepository.findById(any())).thenReturn(Optional.of(item));
@@ -190,7 +190,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void createComment_whenUserIsNotAuthor_thenBadRequestExceptionThrown() {
+    void createCommentWhenUserIsNotAuthorThenBadRequestExceptionThrown() {
         Long userId = 0L;
         Long itemId = 1L;
         CommentDto dto = new CommentDto(0L, "text", null, null);
